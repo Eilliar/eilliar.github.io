@@ -3,18 +3,18 @@
 <head>
         <title>Bruno Eilliar</title>
         <meta charset="utf-8" />
-        <link rel="stylesheet" href="/theme/css/main.css" type="text/css" />
-        <link href="/None" type="application/atom+xml" rel="alternate" title="Bruno Eilliar ATOM Feed" />
+        <link rel="stylesheet" href="https://eilliar.github.io/theme/css/main.css" type="text/css" />
+        <link href="https://eilliar.github.io/feeds/all.atom.xml" type="application/atom+xml" rel="alternate" title="Bruno Eilliar ATOM Feed" />
 
         <!--[if IE]>
                 <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 
         <!--[if lte IE 7]>
-                <link rel="stylesheet" type="text/css" media="all" href="/css/ie.css"/>
-                <script src="/js/IE8.js" type="text/javascript"></script><![endif]-->
+                <link rel="stylesheet" type="text/css" media="all" href="https://eilliar.github.io/css/ie.css"/>
+                <script src="https://eilliar.github.io/js/IE8.js" type="text/javascript"></script><![endif]-->
 
         <!--[if lt IE 7]>
-                <link rel="stylesheet" type="text/css" media="all" href="/css/ie6.css"/><![endif]-->
+                <link rel="stylesheet" type="text/css" media="all" href="https://eilliar.github.io/css/ie6.css"/><![endif]-->
 
 </head>
 
@@ -23,8 +23,8 @@
         
 
             <header>
-                <h1><a href="" id="site-title">Bruno Eilliar </a> : <a href="/first-post.html" id="page-title">First Post</a></h1>
-<time datetime="2016-11-06T18:14:00-02:00">Dom 06 novembro 2016</time>            </header>
+                <h1><a href="https://eilliar.github.io" id="site-title">Bruno Eilliar </a> : <a href="https://eilliar.github.io/artificial-intelligence-01.html" id="page-title">Artificial Intelligence #01 -  Maze Generator</a></h1>
+<time datetime="2016-11-06T20:10:00-02:00">Dom 06 novembro 2016</time>            </header>
 
             <article>
                 <style type="text/css">/*!
@@ -1004,18 +1004,186 @@ h6:hover .anchor-link {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="First-Post">First Post<a class="anchor-link" href="#First-Post">¶</a></h1><p>This is my first post for my Data Science and Stuff blog.</p>
-<p><strong>Author</strong>: Bruno G. Eilliar</p>
+<h1 id="Artificial-Intelligence-#01----Maze-Generator">Artificial Intelligence #01 -  Maze Generator<a class="anchor-link" href="#Artificial-Intelligence-#01----Maze-Generator">¶</a></h1><p>I'm studying AI and I'm getting really obsessed with the idea to build smart agents, or robots. One task that i think is quite interesting (from a roboticist point of view) is to build a robot capable of getting out of a maze.</p>
+<p>So, here I'll start this journey to build this kind of stuff. Firts I will try to build a random maze generator.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="First-import-the-modules.">First import the modules.<a class="anchor-link" href="#First-import-the-modules.">¶</a></h3>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In [ ]:</div>
+<div class="prompt input_prompt">In [1]:</div>
 <div class="inner_cell">
 <div class="input_area">
-<div class=" highlight hl-ipython2"><pre><span></span> 
+<div class=" highlight hl-ipython2"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">random_integers</span> <span class="k">as</span> <span class="n">rand</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">pyplot</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
 </pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Define-the-function-to-build-a-maze.">Define the function to build a maze.<a class="anchor-link" href="#Define-the-function-to-build-a-maze.">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [2]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="k">def</span> <span class="nf">maze</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">81</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">complexity</span><span class="o">=.</span><span class="mi">75</span><span class="p">,</span> <span class="n">density</span><span class="o">=.</span><span class="mi">75</span><span class="p">):</span>
+    <span class="c1"># Only odd shapes</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">((</span><span class="n">height</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">width</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># Adjust complexity and density relative to maze size</span>
+    <span class="n">complexity</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">complexity</span> <span class="o">*</span> <span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+    <span class="n">density</span>    <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">density</span> <span class="o">*</span> <span class="p">((</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)))</span>
+    <span class="c1"># Build actual maze</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="c1"># Fill borders</span>
+    <span class="n">Z</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Z</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Z</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="c1"># Make aisles</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">density</span><span class="p">):</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">rand</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">rand</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">Z</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">complexity</span><span class="p">):</span>
+            <span class="n">neighbours</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">></span> <span class="mi">1</span><span class="p">:</span>             <span class="n">neighbours</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o"><</span> <span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>  <span class="n">neighbours</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="o">></span> <span class="mi">1</span><span class="p">:</span>             <span class="n">neighbours</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">y</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="o"><</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span><span class="p">:</span>  <span class="n">neighbours</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbours</span><span class="p">):</span>
+                <span class="n">y_</span><span class="p">,</span><span class="n">x_</span> <span class="o">=</span> <span class="n">neighbours</span><span class="p">[</span><span class="n">rand</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">neighbours</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">Z</span><span class="p">[</span><span class="n">y_</span><span class="p">,</span> <span class="n">x_</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">Z</span><span class="p">[</span><span class="n">y_</span><span class="p">,</span> <span class="n">x_</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">Z</span><span class="p">[</span><span class="n">y_</span> <span class="o">+</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="n">y_</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x_</span> <span class="o">+</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">x_</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x_</span><span class="p">,</span> <span class="n">y_</span>
+    <span class="k">return</span> <span class="n">Z</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Test-it">Test it<a class="anchor-link" href="#Test-it">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [3]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">my_maze</span> <span class="o">=</span> <span class="n">maze</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">complexity</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">my_maze</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[ True  True  True ...,  True  True  True]
+ [ True False False ..., False False  True]
+ [ True  True  True ...,  True False  True]
+ ..., 
+ [ True False  True ...,  True False  True]
+ [ True False False ..., False False  True]
+ [ True  True  True ...,  True  True  True]]
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Plot-maze.">Plot maze.<a class="anchor-link" href="#Plot-maze.">¶</a></h3>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In [4]:</div>
+<div class="inner_cell">
+<div class="input_area">
+<div class=" highlight hl-ipython2"><pre><span></span><span class="n">pyplot</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">pyplot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">my_maze</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">pyplot</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">binary</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">'nearest'</span><span class="p">)</span>
+<span class="n">pyplot</span><span class="o">.</span><span class="n">xticks</span><span class="p">([]),</span> <span class="n">pyplot</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
+<span class="n">pyplot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area"><div class="prompt"></div>
+<div class="output_png output_subarea ">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASUAAAElCAYAAACiZ/R3AAAABHNCSVQICAgIfAhkiAAAAAlwSFlz
+AAALEgAACxIB0t1+/AAACGlJREFUeJzt3cGu2zYURdG66P//8usgkw7kIKxIelNea5gAMk35HRC8
+uuLr5+fnL4CKvz89AID/EkpAilACUoQSkCKUgBShBKT887v/fL1enhcAlvj5+Xld/buVEpAilIAU
+oQSkCCUg5bcb3Vf0ygGjXq/LPe1LVkpAilACUoQSkCKUgJThje6RDat3m+Ij19jptPEWnDZnq8Y7
+ct3CGFaZUQizUgJShBKQIpSAFKEEpEx7onvVJt0qp4234LQ5s3G89rqr5sFKCUgRSkCKUAJShBKQ
+IpSAlOHq224qPu3rjlj1WSqh/euOsFICUoQSkCKUgBShBKTkN7qv7N7YvPt5MzaZR8ZQKA6sukeF
+jdiq3fdNmwnwFYQSkCKUgBShBKQIJSDlyOrbqqrVjM/b+Vm7KyVaXc68bqEaO8JKCUgRSkCKUAJS
+hBKQMm2ju3zqwgrlR/pPa0lZdd3C2HYXZe5et9DGY6UEpAglIEUoASlCCUgRSkDKtOpb+TH7nQrV
+rKsxnHaqy+7r3nVaO1OZlRKQIpSAFKEEpAglIGXp+5QKj83v/rzCI/1Pbs0ZuW5hw/+u08Y7g5US
+kCKUgBShBKQIJSBFKAEpHznN5NtaEFYpvEBsRPn+jFTq7lb1CieUlFkpASlCCUgRSkCKUAJSPrLR
+/ZT2kyurWhtOa18p3ItvG0Ph+85gpQSkCCUgRSgBKUIJSBFKQMrS6tvuKtCqk0S+rS1mRvvK3baN
+EdpB9n/WOzMqgFZKQIpQAlKEEpAilICUaRvd1Ufcd2+u3lU+qWXnRuruooN2kA4rJSBFKAEpQglI
+EUpAilACUqZV3wqVmbvKbQXV+S20NsywsxpbmLNyVdpKCUgRSkCKUAJShBKQsvR9SuXH6U9rK7i7
+kTpjY7NwPwvtPavmbNVJOHftbvmxUgJShBKQIpSAFKEEpAglIOVRp5mMeMIpE+V2myvlVoy7n7ez
+IjdDoar3jpUSkCKUgBShBKQIJSAlf5rJaRt9q1oFVm2kFu5bddO1fN9WKYzBSglIEUpAilACUoQS
+kCKUgJTh6tsTqmGjYzjthJLCaRkjqie1vHO3wrr7b6hwQskIKyUgRSgBKUIJSBFKQMrwRnf5XUY7
+Nxt3n1By0mfNUP6djSgUcK7sLuqMsFICUoQSkCKUgBShBKQIJSBl2kveqqeD7H78v1C9GGG8c5Tb
+me7aPS4rJSBFKAEpQglIEUpASv40k1Ub1YXxVhXeOTSiMOdPeZdRYS6tlIAUoQSkCCUgRSgBKUIJ
+SFl6mknhcfrqo/szrJrf3VXM08ZbsKq6WagWWikBKUIJSBFKQIpQAlKmnWZS2CB7ssJm7s4xFDZt
+Z3jC79qx3cBXE0pAilACUoQSkCKUgJRpL3lbpVBBuWukYrn79JUr5cpXdc6e8Dsdteo7WykBKUIJ
+SBFKQIpQAlLyG91XTjttY4ZC68hdM1qURubhG09PqY5h5B5bKQEpQglIEUpAilACUoQSkHJk9e2d
+wqkY1TaGQivGiMIYCk47EchpJsDjCCUgRSgBKUIJSHnURnfh0fsrM8a187vtnsfqfdutcCJQoSBi
+pQSkCCUgRSgBKUIJSBFKQMqR1bdCO8juF81V20wK1ZoRhbaN3dXGwm99hJUSkCKUgBShBKQIJSBl
+2kZ34eSI3e99uevuGHafDjLi7n3bfXT4E06LGVHY8H/HSglIEUpAilACUoQSkCKUgJRp1bfqKR6r
+rru7OrTzs7S6/P66hQrVlerfyigrJSBFKAEpQglIEUpAytL3KT3lFI/T3rVz2pwVWl0KnzVyjSfM
+2TtWSkCKUAJShBKQIpSAFKEEpHzkNJPTqlk7aYP4ZXery84WjdPu24gZf29WSkCKUAJShBKQIpSA
+lMyx3ae9n+idQqvApz9r9PMK77Zadd1VJ9YUrPp7s1ICUoQSkCKUgBShBKQIJSBlafVtxu783XPm
+d1fkTmuhKVQsV7n72xm57ohVYyicQjODlRKQIpSAFKEEpAglIGXaRnfhUf/qI/mFzdUR1XmsKBda
+/lT5nU5WSkCKUAJShBKQIpSAFKEEpEyrvhWqQzsfp1/VQlNWbW3YeRLJO6sqliNjOO339I6VEpAi
+lIAUoQSkCCUgZen7lHa3V6zaHD3t1JFqm0j5uxU21gv3rTAGKyUgRSgBKUIJSBFKQIpQAlKWVt/e
++bYTSgrfrVBVOa0NQtvRL04zAb6aUAJShBKQIpSAlI9sdI8obNBeKbdMFDbLq/ftnSe3HY0obLZb
+KQEpQglIEUpAilACUoQSkJKvvhVOSbmyu8JVaM0p3Itqy8+q+/ZOdR5msFICUoQSkCKUgBShBKTk
+N7oLrRinjaF64sfuzevCSTg77Z6HVayUgBShBKQIJSBFKAEpQglIyVTfCi8me2fnI/0jY5jR2rCz
+Slb25O92pdxCY6UEpAglIEUoASlCCUj5yEZ3oW3jrsLj+AW7N8ULLTSrFL5bYcPfSglIEUpAilAC
+UoQSkCKUgJSl1bfCo+y7qwmF6sUT7H4x2c77VvhNFqqN71gpASlCCUgRSkCKUAJSpm10Fx6Rr27e
+Vce10qr7dlr7CuOslIAUoQSkCCUgRSgBKUIJSBmuvp3WRrH7JIY//ayyGeOtfufquN55SvvVCCsl
+IEUoASlCCUgRSkDK8EZ3+XH8wuZdeX6u7Bzv7rk57V6scto8WCkBKUIJSBFKQIpQAlKEEpAy7SVv
+hcrXXdorPqM6ttOqVtV5HGWlBKQIJSBFKAEpQglIyZ9mskrh9BV+KczZaZvEhTlbxUoJSBFKQIpQ
+AlKEEpAilICUx59mAv+X3/pnWCkBKUIJSBFKQIpQAlKEEpDyenIPDXAeKyUgRSgBKUIJSBFKQIpQ
+AlL+Bc5/2G0aqF+RAAAAAElFTkSuQmCC
+">
+</img></div>
 </div>
 </div>
 </div>
@@ -1048,10 +1216,20 @@ h6:hover .anchor-link {
 }
 </script>
             </article>
+                <section id="article-list">
+                    <h2>All posts</h2>
+                    <ol>
+        
+
+ 
+            <li><a href="https://eilliar.github.io/first-post.html" rel="bookmark" title="Permalink to First Post">First Post</a></li>
+    </ol>
+    </section><!-- #article-list -->
 
         <footer>
             <nav>
                 <ul>
+                    <li>:: <a href="https://eilliar.github.io/tags.html">Tags</a></li>
                 </ul>
             </nav>
                 <p id="theme-credit"><a href="http://mathieu.agopian.info/mnmlist/theme.html">Thème mnmlist</a></p>
