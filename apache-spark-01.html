@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Apache Spark #01 — Bruno Eilliar</title>
+	<meta name="description" content="Title: Apache Spark #01; Date: 2016-11-12; Author: Bruno G. Eilliar">
+	<meta name="author" content="Bruno Godoi Eilliar">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+	<!--[if lt IE 9]>
+		<script src="/theme/html5.js"></script>
+		<![endif]-->
+	<link href="/theme/css/ipython.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/simplex/bootstrap.min.css" rel="stylesheet">
+	<link href="/theme/css/local.css" rel="stylesheet">
+	<link href="/theme/css/pygments.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1><a href="/">Bruno Eilliar</a>
+			<br>	</div>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+<div class="article" itemscope itemtype="http://schema.org/BlogPosting">
+	<div class="text-center article-header">
+		<h1 itemprop="name headline" class="article-title">Apache Spark #01</h1>
+		<span itemprop="author" itemscope itemtype="http://schema.org/Person">
+			<h4 itemprop="name">Bruno G. Eilliar</h4>
+		</span>
+		<time datetime="2016-11-12T14:00:00-02:00" itemprop="datePublished">Sáb 12 novembro 2016</time>
+	</div>
+	<div>
+		Category:
+		<span itemprop="articleSection">
+			<a href="/category/spark.html" rel="category">Spark</a>
+		</span>
+	</div>
+ 
+	<div>
+		Tags:
+		<span itemprop="keywords">
+			<a href="/tag/spark.html" rel="tag">spark</a>
+		</span>
+		<span itemprop="keywords">
+			<a href="/tag/data-science.html" rel="tag">data-science</a>
+		</span>
+		<span itemprop="keywords">
+			<a href="/tag/clustering.html" rel="tag">clustering</a>
+		</span>
+	</div>
+	<div itemprop="articleBody" class="article-body"><p>At <a href="https://www.cargox.com.br">CargoX</a> we are starting to develop new techonologies and I'm really excited to be part of that. I previously had a rapid contact with Apache Spark (at an EDX course) but never used it on more serious way. Right now I'm exploring this framework and would like to share some of my knowledge with all of you interested on getting started with this tool. </p>
+<p>This post is about how to get started with <a href="http://spark.apache.org/">Apache Spark</a> on Standalone Mode. I'll not tell you about how this tool is amazing and so on, rather I will just teach you how to start Spark on a single machine running Ubuntu. But if you want to know a little more about Spark and how it works, you can watch <a href="https://www.youtube.com/watch?v=MFDtWW9ckqo">How Apache Spark Works</a>.</p>
+<h3>Amazon EC2</h3>
+<p>Before we install Spark we need a server. I recommend <a href="https://aws.amazon.com/ec2/">Amazon EC2</a>, it provides quick configure and launch servers in a pay-as-you-go model. If it's your first time on Amazon EC2 you can make use of a 1 year free t2.micro Linux instance, wich is more than enough for our exploratory purposes. See more about that <a href="https://aws.amazon.com/free/">here</a>.</p>
+<p>Make sure to launch and connect via ssh to your t2.micro instance, you can follow the steps described <a href="http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html">here</a>. If you don't have an Amazon account you will need to create one, and this is the down side: you will need a credit card to be able to continue. But for me is working fine, even though my credit card is not international. But relax, to use your free t2.micro instance you will not be charged at all, during a year. After that period you will be charged only if you use it. (Amazon is not paying me for this... sadly).</p>
+<h3>Installing Spark</h3>
+<p>Go to <a href="http://spark.apache.org/downloads.html">Apache Spark Download</a>, we need to get the link to download it into our EC2 instance. It's the 4 item on the image below. Right click on it and copy it into your clipboard.</p>
+<p><img alt="SparkDownload" src="/images/SparkDownload.png" /></p>
+<p>Now, on your EC2 instance (through ssh connection) type the following commands:</p>
+<div class="highlight"><pre><span></span><span class="c1"># To Home Directory</span>
+<span class="nb">cd</span> ~
+<span class="c1"># Download Spark to home directory:</span>
+wget http://d3kbcqa49mib13.cloudfront.net/spark-2.0.1-bin-hadoop2.7.tgz
+<span class="c1"># Unpack Spark in /opt directory</span>
+sudo tar zxvf spark-2.0.1-bin-hadoop2.7.tgz -C /opt
+<span class="c1"># Create a symbolic link to make life easier</span>
+sudo -ln -fs spark-2.0.1-bin-hadoop2.7 /opt/spark
+</pre></div>
+
+
+<p>Let's now set a <em>SPARK_HOME</em> environment variable so it takes effect every time we login into our EC2 instance. Insert the following lines into your <em>~/.bash_profile</em>, then save it:</p>
+<div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">SPARK_HOME</span><span class="o">=</span>/opt/spark
+<span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="nv">$SPARK_HOME</span>/bin
+<span class="nb">export</span> PATH
+</pre></div>
+
+
+<p>Reload the environment variables to take effect:</p>
+<div class="highlight"><pre><span></span><span class="nb">source</span> ~/.bash_profile
+
+<span class="c1"># Confirm spark-submit is in the PATH. This command will display a version number</span>
+spark-submit --version
+</pre></div>
+
+
+<p>On your terminal you should see something like this:</p>
+<p><img alt="SparkVersion" src="/images/sparkversion.png" /></p>
+<h3>Testing Spark</h3>
+<p>Let's run a simple example to see if everything is working as it should. Spark is written in Scala but it also comes with API for the following languages: Java (ugh!), Python (Oh Yeah!) and R (meh!). If you want to know more about each one, you can go to <a href="http://spark.apache.org/docs/latest/api.html">Spark API Documentation</a>.  </p>
+<p>So, we will count the lines on the <em>README.md</em> file that comes with Spark. First, we can use the linux <em>wc</em> command to get the rigth answer:</p>
+<div class="highlight"><pre><span></span><span class="x">wc -l </span><span class="p">$</span><span class="nv">SPARK_HOME</span><span class="x">/README.md</span>
+</pre></div>
+
+
+<p>Mine is showing 99 lines. Now let's do the same on the Spark Interactive Shell. The nice thing about using interactive shell is that it offers a quick way to get started with Spark jobs. I'll be using Python Interactive shell, because I am more familiar with Python language. You can start a shell in the language of your choice.</p>
+<div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$SPARK_HOME</span>
+<span class="nv">$SPARK_HOME</span>/bin/pyspark
+</pre></div>
+
+
+<p>Once the shell is started we see that a SparkSession is available as 'spark'. We will see more about that in the future. </p>
+<p><img alt="PySpark" src="/images/pyspark01.png" /></p>
+<p>Now we can run the following lines of code to also read the README.md file and count the number of lines.</p>
+<div class="highlight"><pre><span></span><span class="c1"># Load README.md file into a Resilient Distributed Dataset (RDD).</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span> <span class="o">=</span> <span class="n">spark</span><span class="o">.</span><span class="n">sparkContext</span><span class="o">.</span><span class="n">textFile</span><span class="p">(</span><span class="s2">&quot;README.md&quot;</span><span class="p">)</span>
+<span class="c1"># Check tye of textFile</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">textFile</span><span class="p">)</span>
+<span class="c1"># Count the number of lines into the file.</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">textFile</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+<span class="c1"># Exit interactive Shell</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">quit</span><span class="p">()</span>
+</pre></div>
+
+
+<p>We see that the count matches with our previous value! Congratulations, now you have Spark running on a EC2 instance. I will continue to explore Spark and will bring more interisting applications with this amazing tool.</p>
+<p>See you on the next post. ;)</p></div>
+	<hr>
+	<h2>Comments</h2>
+</div>
+		</div>
+	</div> 	<!-- <hr> -->
+</div> <!-- /container -->
+<footer class="aw-footer bg-danger">
+	<div class="container"> <!-- footer -->
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<div class="row">
+					<div class="col-md-3">
+						<h4>Navigation</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="">Bruno Eilliar</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Author</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="https://br.linkedin.com/in/bruno-eilliar-97933437">LinkedIn</a></li>
+							<li><a href="https://github.com/Eilliar">GitHub</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Categories</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="/category/posts.html">posts (1)</a></li>
+							<li><a href="/category/spark.html">Spark (1)</a></li>
+						</ul>
+					</div>
+					<div class="col-md-3">
+						<h4>Links</h4>
+						<ul class="list-unstyled my-list-style">
+							<li><a href="http://getpelican.com/">Pelican</a></li>
+							<li><a href="http://python.org/">Python.org</a></li>
+							<li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+<div class="container">
+	<div class="row">
+		<div class="col-md-12 text-center center-block aw-bottom">
+			<p>&copy; Bruno Godoi Eilliar 2016</p>
+			<p>Powered by Pelican</p>
+		</div>
+	</div>
+</div>
+<!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function($) {
+	$("div.collapseheader").click(function () {
+		$header = $(this).children("span").first();
+		$codearea = $(this).children(".input_area");
+		$codearea.slideToggle(500, function () {
+			$header.text(function () {
+				return $codearea.is(":visible") ? "Collapse Code" : "Expand Code";
+			});
+		});
+	});
+});
+</script>
+</body>
+</html>
