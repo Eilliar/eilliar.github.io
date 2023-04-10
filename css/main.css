@@ -7,7 +7,7 @@ body {
     height: 100%;
     width: 100%;
     text-align: center;
-    background: #181818;
+    background: #2C061F;
     color: #e4e4ef;
 }
 
@@ -18,20 +18,20 @@ body {
 }
 
 .eilliar-box h1 {
-    font-family: 'Cantarell', sans-serif;
+    font-family: 'Saira', sans-serif;
     font-size: 80px;
     margin-bottom: 5px;
 }
 
 .eilliar-box h2 {
-    font-family: 'Cantarell', sans-serif;
+    font-family: 'Saira', sans-serif;
     font-size: 30px;
     margin-bottom: 10px;
 }
 
 a {
     font-kerning: normal;
-    font-family: 'Cantarell', sans-serif;
+    font-family: 'Saira', sans-serif;
     font-size: 25px;
     color: #73c936;
     text-decoration: none;
