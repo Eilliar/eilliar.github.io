@@ -29,6 +29,15 @@ body {
     margin-bottom: 10px;
 }
 
+.eilliar-box h3 {
+    font-family: 'Saira', sans-serif;
+    font-size: 20px;
+    padding: 20px;
+    margin-bottom: 10px;
+    width: 1000px; 
+    margin: auto; 
+}
+
 a {
     font-kerning: normal;
     font-family: 'Saira', sans-serif;
