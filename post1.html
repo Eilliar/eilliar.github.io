@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Bruno Eilliar's Blog</h1>
+    </header>
+
+    <main>
+        <!-- Blog Post Content -->
+        <article>
+            <h2>Hello World!</h2>
+            <p class="post-date">January 17, 2025</p>
+
+            <section class="content">
+                <p>New year, new me... is what they say. As with every new year, I take some time to set new goals,
+                    both professional and personal, for the year that comes. In 2025 I setup to quite a few things.
+                    But one thing on my study plan are proving to be the one that I'm most engaged with: <b>learning
+                        game development and C++.</b>
+                </p>
+                <p>You see, C++ was something that I learned at university, but since I started to work at CargoX, never
+                    more I touched a single line of code in C++, relying entirely on Python to do my job as Data
+                    Scientist. But everything started to change last year, around November, when in order to have a
+                    reasonable excution time for a hyperparameter search for UMAP and HDBSCAN I had to install and use
+                    <a href="https://rapids.ai/">RAPIDS</a>. Then I decided to understand what RAPIDS was using under
+                    the hood to be able to run algorithms in GPU, that was when I started to understand the way CUDA
+                    works. Specially through this <a href="https://youtu.be/86FAWCzIe_4?si=tt2ipbXBeL7SkZsP">amazing
+                        tutorial</a>. I ended 2024 doing some simple CUDA experiments then I noticed that a lot of C++
+                    was strange to me. Python made me very lazy in the past 7 years. Then I decided: <b>I need to
+                        re-learn
+                        C++</b>. I started to take a look on <a href="https://pytorch.org/cppdocs/">PyTorch C++ API</a>
+                    to try
+                    to replicate basic neural nets on C++. But then I started to get frustrated, specially because I
+                    knew how to code the same nets in very few minutes using Python API instead of C++, the progress was
+                    really slow and boring. Then it occurred to me: since C++ is widely used for game development, why
+                    not learn C++ while learning game development? (as a gamer this made complete sense to me).
+                </p>
+                <p>So it's 2025 and I bought <a
+                        href="https://www.amazon.com/Beginning-Game-Programming-scratch-building/dp/1835081746">Beginning
+                        C++ Game Programming - Third Edition</a> and started to code the games. It ain't much but it's
+                    honest work:
+                </p>
+                <br>
+                <div class="video-container">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/ySCZIwrtBOs"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <br>
+                <p>It proved to be much more fun to learn something new when you build something that is also new to
+                    you. Coding
+                    for data science tasks is really different then coding for games. Now I have to
+                    understand game loops, work with user inputs, events, etc. It's a lot of best practices that I hope
+                    find some usefullness on my job as a Data Scientist.</p>
+                <p>The book uses <a href="https://www.sfml-dev.org/">SFML</a> as framework for game development, making
+                    it very
+                    easy to put images on a screen and make them move, play some sounds and window management. But then
+                    I started to wonder,
+                    "how the fuck is this transforming data stored in computer's memory into images on my screen?".
+                    Then I started to research... and research (one can say this is a trait of any Data Scientist,
+                    wanting to
+                    understand how an algorithm works). Then I came accross something that is changing my mind: lectures
+                    on computer graphics by <a href="https://www.scratchapixel.com/">scratchapixel</a> and <b>it's
+                        beautiful </b>🤩.
+                    So now I'm stuck, 1h to 2h a day working my way through the lectures and understanding that the
+                    transformation matrices that I used <a
+                        href="https://www.mathworks.com/help/robotics/ug/coordinate-transformations-in-robotics.html">
+                        in robotics</a> are basically the same stuff used to project stuff
+                    from a 3D simulated word into a canvas (ok, it's an oversimplification, but the concepts are the
+                    same). That is why math is so beautiful, different applications, same divine language.
+                </p>
+                <p>So that is my goal for 2025: <b>become better at C++ through computer graphics and game
+                        programming</b>. Maybe even launch a demo game on Steam 😂... ok, let's be real, maybe on
+                    itch.io (I've the feeling that it's easier there). I even built a plan:</p>
+                <br>
+                <div class="image-container">
+                    <img src="images/post1/plan.png" />
+                </div>
+                <br>
+                <p>And to keep track of my progress I decided to revamp my GitHub page and transform it into a blog. So
+                    here I'm, 2025, after a 2024 that was a roller coaster I decided to re-learn a very old language
+                    (sorry Rust, you will have to wait)
+                    building stuff that are completely not related to my job. I hope this proves to be something worth
+                    the time, having fun along the way is something I would be satisfied with. To finish this post, here
+                    is some 3d projections that they teach on scratchapixel:
+                </p>
+                <br>
+                <div class="image-container">
+                    <img src="images/post1/3d_view.png" />
+                </div>
+            </section>
+
+            <nav>
+                <a href="index.html">&larr; Back to Home</a>
+            </nav>
+        </article>
+    </main>
+</body>
+
+</html>
