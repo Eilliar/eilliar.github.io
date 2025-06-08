@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World!</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>s
+</head>
+
+<body>
+    <header>
+        <h1>Bruno Eilliar's Blog</h1>
+    </header>
+
+    <main>
+        <!-- Blog Post Content -->
+        <article>
+            <h2>Learning Reinforcement Learning - Part 1</h2>
+            <p class="post-date">June 8, 2025</p>
+
+            <section class="content">
+                <p>Reinforcement Learning (RL) is a powerful paradigm for training agents to make decisions in uncertain
+                    environments.
+                    To deepen my understanding, I decided to implement an RL agent that learns to play The Witcher`s
+                    Dice Poker using
+                    the Proximal Policy Optimization (PPO) algorithm.</b>
+                    In this post, I'll walk through the garbage I have produced to try to achieve that end.
+                </p>
+                <h3>The project is organized as follows:</h3>
+                <p>
+                <ul>
+                    <li>Dice Rolling: Simulates rolling dice and retrieving outcomes.</li>
+                    <li>Hand Evaluation: Assesses the player's hand and determines winners.</li>
+                    <li>RL Environment: A custom Gymnasium environment for the agent.</li>
+                    <li>Training Script: Uses Stable Baselines3's PPO to train the agent.</li>
+                </ul>
+                </p>
+                <h3>The Game: Dice Poker</h3>
+                <p>
+                    Each player rolls five dice, can re-roll selected dice up to two times, and the best poker-style
+                    hand wins.
+                    One note here, my RL environment models a single agent playing to maximize its hand value.
+                    My goal was to first check if the agent can learn rules of the game.
+                </p>
+                <h3>Gymnasium Environment</h3>
+                <p>
+                    I created a custom environment compatible with Gymnasium, where the observation includes the five
+                    dice and the current hand value. The agent's action is a binary mask indicating which dice to
+                    re-roll. Notice that thw following environment is named DicePockerEnv2, that is because I was teting
+                    several approaches, and the following one, where the state variable holds the dice values and the
+                    hand value for that particular combination.
+                </p>
+                <pre><code class="language-python">class DicePokerEnv2(gym.Env):
+    metadata = {"render_modes": ["human"]}
+
+    def __init__(self, max_rolls=3):
+        super().__init__()
+        # 5 dice (1-6) + 1 hand value (0-8, assuming 9 hand ranks)
+        self.observation_space = spaces.Box(
+            low=np.array([1, 1, 1, 1, 1, 0]),
+            high=np.array([6, 6, 6, 6, 6, 8]),
+            shape=(6,),
+            dtype=np.int32
+        )
+        self.action_space = spaces.MultiBinary(5)
+        self.hand_evaluator = HandEvaluator()
+        self.max_rolls = max_rolls
+        self.current_roll = 0
+        self.state = None
+        self.first_hand_value = 0
+
+    def _get_obs(self):
+        hand_value = self.hand_evaluator.evaluate_hand(self.state.tolist()).value
+        return np.array(list(self.state) + [hand_value], dtype=np.int32)
+
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
+        self.state = np.random.randint(1, 7, size=(5,), dtype=np.int32)
+        self.current_roll = 1
+        self.first_hand_value = self.hand_evaluator.evaluate_hand(self.state.tolist()).value
+        return self._get_obs(), {}
+
+    def step(self, action):
+        for i in range(5):
+            if action[i]:
+                self.state[i] = np.random.randint(1, 7)
+        self.current_roll += 1
+
+        hand_value = self.hand_evaluator.evaluate_hand(self.state.tolist()).value
+        obs = np.array(list(self.state) + [hand_value], dtype=np.int32)
+
+        if self.current_roll >= self.max_rolls:
+            reward = hand_value  - self.first_hand_value # Only final reward
+            terminated = True
+        else:
+            reward = 0
+            terminated = False
+
+        truncated = False
+        info = {"hand": self.state.copy(), "hand_value": hand_value}
+        return obs, reward, terminated, truncated, info
+
+    def render(self, mode="human"):
+        hand_value = self.hand_evaluator.evaluate_hand(self.state.tolist()).value
+        print(f"Hand: {self.state}, value: {hand_value}")
+
+    def close(self):
+        pass
+                </code>
+                </pre>
+
+                <h3>Training the Agent with PPO</h3>
+                <p>
+                    <a href="https://arxiv.org/abs/1707.06347">PPO (Proximal Policy Optimization)</a> is a robust policy
+                    gradient algorithm that balances learning
+                    speed and stability. I used <a href="https://stable-baselines3.readthedocs.io/">Stable
+                        Baselines3</a> for training:
+                </p>
+                <pre><code class="language-python">from stable_baselines3 import PPO
+from stable_baselines3.common.monitor import Monitor
+from dice_poker_env import DicePokerEnv
+
+env = DicePokerEnv()
+env = Monitor(env, "./logs")
+policy_kwargs = dict(net_arch=[128, 128])
+model = PPO(
+    "MlpPolicy",
+    env,
+    verbose=1,
+    tensorboard_log="./ppo_tensorboard/",
+    policy_kwargs=policy_kwargs,
+    device="cpu"
+)
+
+model.learn(total_timesteps=500_000)
+model.save("ppo_dice_poker")
+                </code></pre>
+
+                <h3>Evaluating the Agent</h3>
+                <p>
+                    If you're paying attention, you noticed that during training I use TensorBoard to log (in
+                    ./ppo_tensorboard/), but I'll leave graph interpretation for another blog post, since I'm also
+                    learning some of the metrics. So, to showcase and evaluate if the agent is producing meaningful
+                    results, I run some games and check its decisions. For instance, the following game:
+                </p>
+                <pre><code class="language-bash">Starting game # 1
+Starting hand: [6 2 2 2 1]
+Action: [1. 0. 0. 0. 0.]
+Hand: [2 2 2 2 1]
+Action: [0. 0. 0. 0. 0.]
+Hand: [2 2 2 2 1]
+Final reward: 7
+                </code></pre>
+                <p>
+                    It decided to re-roll only the 1st die, but not the last one. I'd have chosen to re-roll the 1st and last
+                    dice.
+                    Anyway, there is still a lot to be done. Next steps are:
+                <ul>
+                    <li>Make it play against a rule-based opponent or set up a multi-agent environment</li>
+                    <li>Add the betting mechanics</li>
+                </ul>
+                </p>
+                <p>
+                    For now, if you want to check the code, I've <a
+                        href="https://github.com/Eilliar/poker-dice/tree/v0.1.1?tab=readme-ov-file">taged the first
+                        version here</a>. Feedbacks are welcome!
+                </p>
+            </section>
+
+            <nav>
+                <a href="index.html">&larr; Back to Home</a>
+            </nav>
+        </article>
+    </main>
+</body>
+
+</html>
